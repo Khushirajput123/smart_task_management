@@ -6,7 +6,7 @@ const {jwtAuthMiddleware,generateToken}=require('./../jwt');
 
 
 
- router.post('/register',async (req,res)=>{
+ router.post('/signup',async (req,res)=>{
   try{
     const data=req.body
     const newUser=new User(data);//model
@@ -28,7 +28,7 @@ const payload ={
     res.status(500).json({error:'Internal Server Error'});//500 internal server error
   }})
   
-  router.get('/register',async (req,res)=>{//all data read
+  router.get('/signup',async (req,res)=>{//all data read
     try{
   const data=await User.find();
   console.log('datafetched');
@@ -38,7 +38,7 @@ const payload ={
       res.status(500).json({error:'Internal Server Error'});
     }
     })
-    module.exports = router;
+  
 
 
 //login route
@@ -59,10 +59,21 @@ router.post('/login',async(req,res)=>{
     }
     const token = generateToken(payload);
     //return token as response
-    res.json({token})
-  } catch(err){
-    console.log(err);
+    // res.json({token})
+    res.json({
+      token,
+      user: {
+        _id: user._id,
+        username: user.username,
+        email: user.email
+      }
+    });
+  }
+   catch(err){
+   // console.log(err);
+   console.log('Signup Error:', err);
     res.status(500).json({error:'Internal Server Error'});//500 internal server error
   }
 })
+module.exports = router;
 

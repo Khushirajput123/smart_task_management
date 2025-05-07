@@ -1,9 +1,11 @@
 const express = require("express");
 const router = express.Router();
 const Task = require("../models/task");
-
+// const jwtAuthMiddleware=require("../jwt");
+//const {jwtAuthMiddleware,generateToken}=require('./../jwt');
+const { jwtAuthMiddleware } = require("../jwt");
 // Create a task
-router.post("/tasks", async (req, res) => {
+router.post("/tasks",jwtAuthMiddleware, async (req, res) => {
   try {
     const newTask = new Task(req.body);
     const savedTask = await newTask.save();
@@ -16,7 +18,7 @@ router.post("/tasks", async (req, res) => {
 });
 
 // Get all tasks
-router.get("/tasks", async (req, res) => {
+router.get("/tasks", jwtAuthMiddleware,async (req, res) => {
   try {
     //const tasks = await Task.find().populate("userId", "username email");
     const data=await Task.find();
@@ -31,7 +33,7 @@ router.get("/tasks", async (req, res) => {
 
 
 
-router.put('/tasks/:id',async(req,res)=>{
+router.put('/tasks/:id',jwtAuthMiddleware,async(req,res)=>{
           try{
             const TaskId=req.params.id;//extracttheid from the url parameter
             const updatedTaskData=req.body;//data send by user to update(json)
@@ -55,7 +57,7 @@ router.put('/tasks/:id',async(req,res)=>{
         
   
   
-        router.delete('/tasks/:id', async (req, res) => {
+        router.delete('/tasks/:id', jwtAuthMiddleware,async (req, res) => {
           try {
               const TaskId = req.params.id;
              // const response = await Person.findByIdAndRemove(personId);
@@ -77,3 +79,4 @@ router.put('/tasks/:id',async(req,res)=>{
   
      
 module.exports = router;
+
